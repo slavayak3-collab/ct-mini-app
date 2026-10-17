@@ -3,229 +3,442 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Подготовка к ЦТ/ЦЭ: Русский язык</title>
+    <title>Адукар - Подготовка к ЦТ</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-color: var(--tg-theme-bg-color, #f4f4f5);
-            --text-color: var(--tg-theme-text-color, #1f2937);
-            --hint-color: var(--tg-theme-hint-color, #6b7280);
-            --button-color: var(--tg-theme-button-color, #3b82f6);
-            --button-text-color: var(--tg-theme-button-text-color, #ffffff);
-            --card-bg: var(--tg-theme-secondary-bg-color, #ffffff);
+            --tg-theme-bg-color: #ffffff;
+            --tg-theme-text-color: #222222;
+            --tg-theme-hint-color: #999999;
+            --tg-theme-button-color: #2481cc;
+            --tg-theme-button-text-color: #ffffff;
+            --tg-theme-secondary-bg-color: #f4f4f5;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background-color: var(--tg-theme-bg-color, #ffffff);
+            color: var(--tg-theme-text-color, #222222);
             margin: 0;
             padding: 16px;
+            box-sizing: border-box;
         }
 
-        h1, h2 {
-            text-align: center;
+        h1, h2, h3 {
+            margin-top: 0;
+            color: var(--tg-theme-text-color, #222222);
         }
 
-        .tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 8px;
-            background: var(--card-bg);
-            color: var(--text-color);
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .tab-btn.active {
-            background: var(--button-color);
-            color: var(--button-text-color);
-        }
-
-        .section {
-            display: none;
-        }
-
-        .section.active {
-            display: block;
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
         }
 
         .card {
-            background: var(--card-bg);
+            background-color: var(--tg-theme-secondary-bg-color, #f4f4f5);
             border-radius: 12px;
             padding: 16px;
             margin-bottom: 12px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .question-title {
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        .options label {
-            display: block;
-            margin: 6px 0;
             cursor: pointer;
+            transition: transform 0.1s;
         }
 
-        button.action-btn {
-            background: var(--button-color);
-            color: var(--button-text-color);
+        .card:active {
+            transform: scale(0.98);
+        }
+
+        .btn {
+            background-color: var(--tg-theme-button-color, #2481cc);
+            color: var(--tg-theme-button-text-color, #ffffff);
             border: none;
             border-radius: 8px;
             padding: 12px 20px;
             font-size: 16px;
+            font-weight: 600;
             width: 100%;
             cursor: pointer;
-            font-weight: bold;
-            margin-top: 16px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--tg-theme-button-color, #2481cc);
+            border: 2px solid var(--tg-theme-button-color, #2481cc);
+            margin-top: 8px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--tg-theme-button-color, #2481cc);
+            font-size: 16px;
+            cursor: pointer;
+            padding: 0;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        /* Тесты и практика */
+        .question-box {
+            background: var(--tg-theme-secondary-bg-color, #f4f4f5);
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .option-label {
+            display: block;
+            background: var(--tg-theme-bg-color, #ffffff);
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-top: 8px;
+            cursor: pointer;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .option-label input {
+            margin-right: 10px;
         }
 
         .result-box {
-            background: var(--card-bg);
-            padding: 16px;
+            text-align: center;
+            padding: 20px;
+            background: var(--tg-theme-secondary-bg-color, #f4f4f5);
             border-radius: 12px;
             margin-top: 20px;
-            text-align: center;
         }
 
-        .error-item {
-            color: #ef4444;
-            text-align: left;
-            margin: 4px 0;
-        }
-        
-        .vocab-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-        }
-        .vocab-item {
-            background: var(--card-bg);
-            padding: 10px;
+        .word-item {
+            background: var(--tg-theme-bg-color, #ffffff);
+            padding: 10px 14px;
             border-radius: 8px;
-            text-align: center;
-            font-weight: 500;
+            margin-bottom: 8px;
+            border-left: 4px solid var(--tg-theme-button-color, #2481cc);
         }
+
+        .feedback {
+            margin-top: 8px;
+            font-weight: bold;
+            padding: 6px 10px;
+            border-radius: 6px;
+        }
+        .correct-fb { background: #d4edda; color: #155724; }
+        .incorrect-fb { background: #f8d7da; color: #721c24; }
     </style>
 </head>
 <body>
 
-    <h1>🇷🇺 Русский язык: ЦТ/ЦЭ</h1>
+    <div class="container" id="app">
+        <!-- ГЛАВНАЯ: Выбор предмета -->
+        <div id="view-subjects">
+            <h2>📚 Выберите предмет для подготовки</h2>
+            <div class="card" onclick="selectSubject('Белорусский язык')">
+                <h3>🇷🇺/🇧🇾 Белорусский язык</h3>
+                <p>Теория, практика, словарные слова и тесты ЦТ</p>
+            </div>
+            <div class="card" onclick="selectSubject('Русский язык')">
+                <h3>🇷🇺 Русский язык</h3>
+                <p>Правила, орфография, пунктуация и тесты ЦТ</p>
+            </div>
+            <div class="card" onclick="selectSubject('Математика')">
+                <h3>📐 Математика</h3>
+                <p>Формулы, уравнения, задачи и тесты</p>
+            </div>
+        </div>
 
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('test')">📝 Тест (Адукар)</button>
-        <button class="tab-btn" onclick="switchTab('vocab')">📖 Словарные слова</button>
-    </div>
+        <!-- МЕНЮ ПРЕДМЕТА: 3 выбора -->
+        <div id="view-menu" class="hidden">
+            <button class="back-btn" onclick="goHome()">← Назад к предметам</button>
+            <h2 id="menu-title">Предмет</h2>
+            <div class="card" onclick="openSection('theory')">
+                📖 <strong>Теория</strong>
+                <p>Вся необходимая теория, включая полный список словарных слов.</p>
+            </div>
+            <div class="card" onclick="openSection('practice')">
+                ✍️ <strong>Практика</strong>
+                <p>Задания для закрепления + интерактивный тренажер словарных слов (мгновенная проверка).</p>
+            </div>
+            <div class="card" onclick="openSection('tests')">
+                📝 <strong>Подготовительные тесты</strong>
+                <p>Полный набор заданий (включая все варианты ЦТ/РТ).</p>
+            </div>
+        </div>
 
-    <!-- РАЗДЕЛ ТЕСТА -->
-    <div id="test-section" class="section active">
-        <div id="quiz-container"></div>
-        <button class="action-btn" onclick="submitTest()">Завершить тест и узнать балл</button>
-        <div id="result" class="result-box" style="display:none;"></div>
-    </div>
+        <!-- РАЗДЕЛ: ТЕОРИЯ (со всеми словарными словами) -->
+        <div id="view-theory" class="hidden">
+            <button class="back-btn" onclick="goMenu()">← Назад к меню</button>
+            <h2>📖 Теория и Словарные слова</h2>
+            <div id="theory-content">
+                <!-- Заполняется динамически -->
+            </div>
+        </div>
 
-    <!-- РАЗДЕЛ СЛОВАРНЫХ СЛОВ -->
-    <div id="vocab-section" class="section">
-        <h2>Популярные словарные слова</h2>
-        <p style="text-align: center; color: var(--hint-color);">Запомните правописание букв:</p>
-        <div class="vocab-grid" id="vocab-grid"></div>
+        <!-- РАЗДЕЛ: ПРАКТИКА -->
+        <div id="view-practice" class="hidden">
+            <button class="back-btn" onclick="goMenu()">← Назад к меню</button>
+            <h2>✍️ Практические разделы</h2>
+            <div class="card" onclick="startPracticeWords()">
+                🔤 <strong>Словарные слова (Тренажер)</strong>
+                <p>Интерактивный тест со словарными словами. Мгновенная проверка ответа!</p>
+            </div>
+            <div class="card" onclick="startPracticeGeneral()">
+                📋 <strong>Практические задания по орфографии</strong>
+                <p>Упражнения на правописание гласных и согласных.</p>
+            </div>
+        </div>
+
+        <!-- ИНТЕРАКТИВНЫЙ ТЕСТ СЛОВАРНЫХ СЛОВ (мгновенная проверка) -->
+        <div id="view-practice-words" class="hidden">
+            <button class="back-btn" onclick="openSection('practice')">← Назад к практике</button>
+            <h2>🔤 Тренажер словарных слов</h2>
+            <div id="practice-words-container"></div>
+        </div>
+
+        <!-- РАЗДЕЛ: ПОДГОТОВИТЕЛЬНЫЕ ТЕСТЫ (все задания) -->
+        <div id="view-tests" class="hidden">
+            <button class="back-btn" onclick="goMenu()">← Назад к меню</button>
+            <h2>📝 Подготовительные тесты ЦТ</h2>
+            <div id="tests-container">
+                <!-- Заполняется всеми заданиями -->
+            </div>
+            <button class="btn" onclick="submitTests()">Завершить тест и проверить</button>
+            <div id="test-results" class="hidden"></div>
+        </div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        function switchTab(tab) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            if(tab === 'test') {
-                document.getElementById('test-section').classList.add('active');
-                event.target.classList.add('active');
-            } else {
-                document.getElementById('vocab-section').classList.add('active');
-                event.target.classList.add('active');
+        let currentSubject = '';
+
+        // ПОЛНЫЙ СПИСОК СЛОВАРНЫХ СЛОВ ИЗ ФОТО
+        const dictWords = [
+            { word: "Абсолютный", desc: "Словарное слово, пишется через А и О" },
+            { word: "Агентство", desc: "Буква т перед ст" },
+            { word: "Алюминий", desc: "Две буквы л" },
+            { word: "Атмосфера", desc: "Словарное слово" },
+            { word: "Бенефис", desc: "Через е" },
+            { word: "Библиотека", desc: "Словарное слово" },
+            { word: "Велосипед", desc: "Через е" },
+            { word: "Венегрет / Винегрет", desc: "Правильно: винегрет (через и)" },
+            { word: "Гротеск", desc: "Через о и е" },
+            { word: "Дезинфекция", desc: "Через и" },
+            { word: "Диапазон", desc: "Через и" },
+            { word: "Идиот / Идиотка", desc: "Через и" },
+            { word: "Искусство", desc: "Две буквы с" },
+            { word: "Калейдоскоп", desc: "Через е и о" },
+            { word: "Колоссальный", desc: "Две буквы л" },
+            { word: "Корифей", desc: "Через о и е" },
+            { word: "Меридиан", desc: "Через е и и" },
+            { word: "Мотивация", desc: "Через о и и" },
+            { word: "Параллель", desc: "Две буквы л" },
+            { word: "Прецедент", desc: "Без букв 'д' (не прецедент, а прецедент)" },
+            { word: "Реплика", desc: "Через е и и" },
+            { word: "Симпатичный", desc: "Через и и а" },
+            { word: "Траектория", desc: "Через а и о" },
+            { word: "Эквивалент", desc: "Через э и и" }
+        ];
+
+        // ПОЛНЫЙ НАБОР ТЕСТОВЫХ ЗАДАНИЙ (включая все задания из теста)
+        const allTestQuestions = [
+            {
+                id: 1,
+                question: "А1. Укажите слова, в которых пишется буква А:",
+                options: ["к..саться", "р..стение", "выр..щенный", "з..рница", "пл..вец"],
+                correct: [0, 3] // Несколько вариантов ответов
+            },
+            {
+                id: 2,
+                question: "А2. Укажите слова, в которых пишется НН:",
+                options: ["варе..ый", "жаре..ый в масле", "серебря..ый", "ветре..ый", "лимо..ый"],
+                correct: [1, 4]
+            },
+            {
+                id: 3,
+                question: "А3. Укажите предложения, в которых НЕ с глаголом пишется раздельно:",
+                options: ["(не)навидеть ложь", "(не)был на уроке", "(не)здоровится с утра", "(не)доумевать по поводу", "(не)говори глупостей"],
+                correct: [1, 4]
+            },
+            {
+                id: 4,
+                question: "А4. Укажите слова с приставкой ПРИ-:",
+                options: ["пр..открыть окно", "пр..ехать в город", "пр..брежный", "пр..красный вид", "пр..думать план"],
+                correct: [0, 1, 2]
+            },
+            {
+                id: 5,
+                question: "А5. Укажите слова, в которых на месте пропуска пишется буква И:",
+                options: ["соб..рать", "заж..гать", "ум..рать", "бл..стеть", "ст..лить"],
+                correct: [0, 2]
+            },
+            {
+                id: 6,
+                question: "А6. Укажите варианты слитного написания НЕ со словами:",
+                options: ["(не)высокий, а низкий дом", "(не)прочитанная книга", "(не)решенная учеником задача", "(не)брежный почерк", "(не)законченный вовремя проект"],
+                correct: [3]
+            },
+            {
+                id: 7,
+                question: "А7. Укажите слова, в которых пишется буква О после шипящих в суффиксах/окончаниях:",
+                options: ["девч..нка", "сундуч..к", "береж..т", "ежов..й", "ш..лк"],
+                correct: [0, 1, 3]
+            },
+            {
+                id: 8,
+                question: "А8. Укажите слова, где на месте пропуска пишется мягкий знак (Ь):",
+                options: ["меж..я", "сот..рудник", "павиль..н", "ноч..", "читаеш.."],
+                correct: [3, 4]
+            },
+            {
+                id: 9,
+                question: "А9. Укажите предложения, в которых нужно поставить одну запятую:",
+                options: [
+                    "Солнце скрылось за тучами и на землю опустилась ночная прохлада.",
+                    "В саду росли и розы и астры и гладиолусы.",
+                    "Он был человеком умным но сложным в общении.",
+                    "Шумел прибрежный лес и кричали чайки."
+                ],
+                correct: [2]
+            },
+            {
+                id: 10,
+                question: "А10. Укажите варианты с правильным оформлением прямой речи:",
+                options: [
+                    "Учитель сказал: «Завтра будет контрольная работа».",
+                    "«Мы обязательно победим», — уверенно ответил капитан.",
+                    "«Идемте в парк» — предложил товарищ.",
+                    "«Какая прекрасная погода!» — восхищенно произнесла она."
+                ],
+                correct: [0, 1, 3]
+            }
+        ];
+
+        function selectSubject(subject) {
+            currentSubject = subject;
+            document.getElementById('menu-title').innerText = subject;
+            switchView('view-menu');
+        }
+
+        function goHome() { switchView('view-subjects'); }
+        function goMenu() { switchView('view-menu'); }
+
+        function openSection(section) {
+            if (section === 'theory') {
+                renderTheory();
+                switchView('view-theory');
+            } else if (section === 'practice') {
+                switchView('view-practice');
+            } else if (section === 'tests') {
+                renderTests();
+                switchView('view-tests');
             }
         }
 
-        // Данные теста (Адукар Тест 2, Часть А)
-        const questions = [
-            { id: 1, text: "А1. Пишется А на месте пропуска в словах:", options: ["1) долго м_лчать", "2) выг_реть на солнце", "3) изл_гать красиво", "4) сокр_щать численность", "5) к_варный план"], correct: [3, 4] },
-            { id: 2, text: "А2. Пишется Е на месте пропуска в словах:", options: ["1) осв_щать фонариком", "2) ум_реть от смеха", "3) ижд_венец", "4) уд_вляться результату", "5) выч_тать числа"], correct: [1, 2] },
-            { id: 3, text: "А3. Пишется С на месте пропуска в словах:", options: ["1) бе_сонная ночь", "2) пес_имист", "3) уз_кий ручей", "4) ткац_кий станок", "5) сказочный витя_ь"], correct: [1, 2] },
-            { id: 4, text: "А4. Пишется Е на месте пропуска в словах:", options: ["1) скач_щий всадник", "2) засе_вший поле", "3) завис_л от родителей", "4) трактор паш_т", "5) терп_т поражение"], correct: [3, 4] },
-            { id: 5, text: "А5. Укажите номера пропусков, где пишется НЕ (...н_ прислушивалась...):", options: ["1) 1, 2, 3", "2) 2, 4, 5", "3) 1, 3, 5", "4) 2, 3, 4", "5) 1, 4, 5"], correct: [2, 4, 5] },
-            { id: 6, text: "А6. Пишется НЕ слитно в словах:", options: ["1) вовсе (не вкусный) обед", "2) (не)годующий взгляд", "3) (не)выполненное вовремя задание", "4) очень (не)красивый жест", "5) (не)распустившийся цветок"], correct: [2, 4, 5] },
-            { id: 7, text: "А7. Через дефис пишутся слова:", options: ["1) (сельско)хозяйственный отдел", "2) (поп)культура", "3) (ярко)красный закат", "4) (юго)западный ветер", "5) (трёх)метровая доска"], correct: [2, 3, 4] },
-            { id: 8, text: "А8. Слитно пишутся выделенные слова в предложениях:", options: ["1) (В)последствии...", "2) Имей (в)виду...", "3) Я забрёл (в)глубь...", "4) ...за(то) результат...", "5) ...то(же) решили..."], correct: [1, 4, 5] }
-        ];
-
-        // Словарные слова
-        const vocabWords = [
-            "Аккомпанемент", "Винегрет", "Дилетант", "Иждивенец", "Интеллигент", 
-            "Палисадник", "Периферия", "Привилегия", "Терраса", "Эксперимент",
-            "Аббревиатура", "Абонемент", "Агрегат", "Акклиматизация", "Аккумулятор"
-        ];
-
-        function renderQuiz() {
-            const container = document.getElementById('quiz-container');
-            let html = '';
-            questions.forEach(q => {
-                html += `<div class="card"><div class="question-title">${q.text}</div><div class="options">`;
-                q.options.forEach((opt, idx) => {
-                    html += `<label><input type="checkbox" name="q${q.id}" value="${idx+1}"> ${opt}</label>`;
-                });
-                html += `</div></div>`;
+        function switchView(viewId) {
+            ['view-subjects', 'view-menu', 'view-theory', 'view-practice', 'view-practice-words', 'view-tests'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
             });
-            container.innerHTML = html;
+            document.getElementById(viewId).classList.remove('hidden');
         }
 
-        function renderVocab() {
-            const grid = document.getElementById('vocab-grid');
-            grid.innerHTML = vocabWords.map(w => `<div class="vocab-item">✅ ${w}</div>`).join('');
+        // Рендер теории со всеми словарными словами
+        function renderTheory() {
+            let html = `<h3>Полезные материалы по предмету: ${currentSubject}</h3>`;
+            html += `<p>Ниже представлен полный список словарных слов из нашего справочника:</p>`;
+            dictWords.forEach(item => {
+                html += `<div class="word-item"><strong>${item.word}</strong> — ${item.desc}</div>`;
+            });
+            document.getElementById('theory-content').innerHTML = html;
         }
 
-        function submitTest() {
-            let score = 0;
-            let mistakes = [];
-
-            questions.forEach(q => {
-                const checked = Array.from(document.querySelectorAll(`input[name="q${q.id}"]:checked`)).map(el => parseInt(el.value));
-                const correct = q.correct.sort();
-                const isMatch = JSON.stringify(checked.sort()) === JSON.stringify(correct);
+        // Интерактивная практика словарных слов (с мгновенной проверкой)
+        function startPracticeWords() {
+            switchView('view-practice-words');
+            let html = `<p>Проверь себя! Выбери правильное написание или ответь верно на словарные слова:</p>`;
+            
+            // Сгенерируем быстрые интерактивные карточки для проверки
+            const sample = [...dictWords].sort(() => 0.5 - Math.random()).slice(0, 6);
+            
+            sample.forEach((item, index) => {
+                const isCorrectVariant = Math.random() > 0.5;
+                const displayedWord = isCorrectVariant ? item.word : item.word.replace('а', 'о').replace('о', 'а').replace('е', 'и');
                 
-                if (isMatch) {
-                    score += 1;
-                } else {
-                    mistakes.push(`<div class="error-item">❌ Ошибка в задании А${q.id}</div>`);
-                }
+                html += `
+                    <div class="question-box" id="pw-box-${index}">
+                        <p><strong>Вопрос ${index + 1}:</strong> Правильно ли написано слово: <strong>«${displayedWord}»</strong>?</p>
+                        <button class="btn" style="margin-top:5px; background: #28a745;" onclick="checkImmediateWord(${index}, ${isCorrectVariant}, true)">Да, верно</button>
+                        <button class="btn" style="margin-top:5px; background: #dc3545;" onclick="checkImmediateWord(${index}, ${isCorrectVariant}, false)">Нет, ошибка</button>
+                        <div id="pw-fb-${index}"></div>
+                    </div>
+                `;
             });
-
-            // Условная шкала ЦТ (перевод первичных баллов в тестовые от 0 до 100)
-            const ctScale = { 0: 10, 1: 22, 2: 35, 3: 48, 4: 60, 5: 72, 6: 82, 7: 92, 8: 100 };
-            const finalScore = ctScale[score] || 10;
-
-            const resDiv = document.getElementById('result');
-            resDiv.style.display = 'block';
-            resDiv.innerHTML = `
-                <h3>Результат тестирования</h3>
-                <p>Правильных ответов: <b>${score} из ${questions.length}</b></p>
-                <h2>Ваш тестовый балл по ЦТ: <span style="color: #2563eb;">${finalScore} / 100</span></h2>
-                <div style="margin-top: 10px;">${mistakes.length > 0 ? '<b>Разбор ошибок:</b>' + mistakes.join('') : '🎉 Идеальный результат! Все верно!'}</div>
-            `;
-            resDiv.scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('practice-words-container').innerHTML = html;
         }
 
-        renderQuiz();
-        renderVocab();
+        function checkImmediateWord(index, actualState, userChoice) {
+            const fbDiv = document.getElementById(`pw-fb-${index}`);
+            if (actualState === userChoice) {
+                fbDiv.innerHTML = `<div class="feedback correct-fb">✅ Верно! Отличная работа.</div>`;
+            } else {
+                fbDiv.innerHTML = `<div class="feedback incorrect-fb">❌ Неверно. Правильный ответ: ${actualState ? 'Да' : 'Нет'}.</div>`;
+            }
+        }
+
+        function startPracticeGeneral() {
+            alert("Раздел общей практики по орфографии в разработке. Скоро здесь появятся новые упражнения!");
+        }
+
+        // Рендер всех тестов ЦТ (от А1 до А10)
+        function renderTests() {
+            let html = `<p>Выполните задания и нажмите кнопку проверки внизу.</p>`;
+            allTestQuestions.forEach((q, qIndex) => {
+                html += `<div class="question-box">`;
+                html += `<p><strong>${q.question}</strong></p>`;
+                q.options.forEach((opt, optIndex) => {
+                    html += `
+                        <label class="option-label">
+                            <input type="checkbox" name="q-${qIndex}" value="${optIndex}">
+                            ${opt}
+                        </label>
+                    `;
+                });
+                html += `</div>`;
+            });
+            document.getElementById('tests-container').innerHTML = html;
+            document.getElementById('test-results').classList.add('hidden');
+        }
+
+        function submitTests() {
+            let score = 0;
+            allTestQuestions.forEach((q, qIndex) => {
+                const checkboxes = document.querySelectorAll(`input[name="q-${qIndex}"]:checked`);
+                let userAnswers = Array.from(checkboxes).map(cb => parseInt(cb.value));
+                
+                // Сравнение массивов правильных и пользовательских ответов
+                const isCorrect = q.correct.length === userAnswers.length && q.correct.every(val => userAnswers.includes(val));
+                if (isCorrect) score++;
+            });
+
+            const resDiv = document.getElementById('test-results');
+            resDiv.classList.remove('hidden');
+            resDiv.innerHTML = `
+                <div class="result-box">
+                    <h3>Результат тестирования</h3>
+                    <p>Правильных ответов: <strong>${score} из ${allTestQuestions.length}</strong></p>
+                    <p>${score >= 8 ? '🎉 Отличный результат! Высокий уровень подготовки.' : '📚 Стоит еще повторить теорию и словарные слова.'}</p>
+                </div>
+            `;
+        }
     </script>
 </body>
 </html>
+

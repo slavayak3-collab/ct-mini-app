@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Подготовка к ЦТ/ЦЭ</title>
-    <!-- Подключаем Telegram Web App JS SDK -->
+    <title>Подготовка к ЦТ/ЦЭ: Русский язык</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-color: var(--tg-theme-bg-color, #ffffff);
-            --text-color: var(--tg-theme-text-color, #222222);
-            --hint-color: var(--tg-theme-hint-color, #999999);
-            --button-color: var(--tg-theme-button-color, #2481cc);
+            --bg-color: var(--tg-theme-bg-color, #f4f4f5);
+            --text-color: var(--tg-theme-text-color, #1f2937);
+            --hint-color: var(--tg-theme-hint-color, #6b7280);
+            --button-color: var(--tg-theme-button-color, #3b82f6);
             --button-text-color: var(--tg-theme-button-text-color, #ffffff);
-            --card-bg: var(--tg-theme-secondary-bg-color, #f4f4f5);
+            --card-bg: var(--tg-theme-secondary-bg-color, #ffffff);
         }
 
         body {
@@ -26,186 +25,207 @@
 
         h1, h2 {
             text-align: center;
-            margin-bottom: 20px;
         }
 
-        .hidden {
-            display: none !important;
-        }
-
-        /* Список предметов */
-        .subjects-list {
+        .tabs {
             display: flex;
-            flex-direction: column;
-            gap: 12px;
+            gap: 8px;
+            margin-bottom: 16px;
         }
 
-        .subject-card {
-            background-color: var(--card-bg);
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: var(--card-bg);
+            color: var(--text-color);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .tab-btn.active {
+            background: var(--button-color);
+            color: var(--button-text-color);
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .question-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .options label {
+            display: block;
+            margin: 6px 0;
+            cursor: pointer;
+        }
+
+        button.action-btn {
+            background: var(--button-color);
+            color: var(--button-text-color);
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 16px;
+            width: 100%;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 16px;
+        }
+
+        .result-box {
+            background: var(--card-bg);
             padding: 16px;
             border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            transition: transform 0.1s;
-        }
-
-        .subject-card:active {
-            transform: scale(0.98);
-        }
-
-        .subject-title {
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        /* Разделы предмета */
-        .sections-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .section-card {
-            background-color: var(--card-bg);
-            padding: 20px;
-            border-radius: 12px;
+            margin-top: 20px;
             text-align: center;
-            cursor: pointer;
-            font-size: 16px;
+        }
+
+        .error-item {
+            color: #ef4444;
+            text-align: left;
+            margin: 4px 0;
+        }
+        
+        .vocab-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        .vocab-item {
+            background: var(--card-bg);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
             font-weight: 500;
-            border: 2px solid transparent;
-            transition: border-color 0.2s;
-        }
-
-        .section-card:hover {
-            border-color: var(--button-color);
-        }
-
-        /* Кнопка назад */
-        .back-btn {
-            background: none;
-            border: none;
-            color: var(--button-color);
-            font-size: 16px;
-            cursor: pointer;
-            margin-bottom: 16px;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .content-box {
-            background-color: var(--card-bg);
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 16px;
         }
     </style>
 </head>
 <body>
 
-    <!-- ЭКРАН 1: СПИСОК ПРЕДМЕТОВ -->
-    <div id="screen-home">
-        <h1>🎯 Подготовка к ЦТ / ЦЭ</h1>
-        <div class="subjects-list" id="subjects-container">
-            <!-- Предметы будут добавлены через JS -->
-        </div>
+    <h1>🇷🇺 Русский язык: ЦТ/ЦЭ</h1>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('test')">📝 Тест (Адукар)</button>
+        <button class="tab-btn" onclick="switchTab('vocab')">📖 Словарные слова</button>
     </div>
 
-    <!-- ЭКРАН 2: РАЗДЕЛЫ ПРЕДМЕТА -->
-    <div id="screen-subject" class="hidden">
-        <button class="back-btn" onclick="goHome()">← Назад к предметам</button>
-        <h1 id="subject-title-heading">Предмет</h1>
-        
-        <div class="sections-grid">
-            <div class="section-card" onclick="openSection('theory')">📖 Теория и правила</div>
-            <div class="section-card" onclick="openSection('practice')">✍️ Практика по темам</div>
-            <div class="section-card" onclick="openSection('test')">📝 Тест-аналог ЦТ/ЦЭ</div>
-        </div>
+    <!-- РАЗДЕЛ ТЕСТА -->
+    <div id="test-section" class="section active">
+        <div id="quiz-container"></div>
+        <button class="action-btn" onclick="submitTest()">Завершить тест и узнать балл</button>
+        <div id="result" class="result-box" style="display:none;"></div>
+    </div>
 
-        <div id="section-content" class="content-box hidden">
-            <!-- Сюда будет загружаться контент выбранного раздела -->
-        </div>
+    <!-- РАЗДЕЛ СЛОВАРНЫХ СЛОВ -->
+    <div id="vocab-section" class="section">
+        <h2>Популярные словарные слова</h2>
+        <p style="text-align: center; color: var(--hint-color);">Запомните правописание букв:</p>
+        <div class="vocab-grid" id="vocab-grid"></div>
     </div>
 
     <script>
-        // Инициализация Telegram Web App
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Разворачиваем на весь экран
+        tg.expand();
 
-        // Данные предметов и контента
-        const subjectsData = {
-            russian: {
-                name: "🇷🇺 Русский язык",
-                theory: "Здесь собраны все правила по орфографии и пунктуации для ЦТ/ЦЭ: Н и НН в суффиксах, слитно/раздельно и т.д.",
-                practice: "Тренажер заданий А1-А18. Выберите тему и решите 20 упражнений с проверкой.",
-                test: "Полноценный репетиционный тест формата ЦТ (50 вопросов, ограничение по времени)."
-            },
-            math: {
-                name: "📐 Математика",
-                theory: "Формулы геометрии, тригонометрии, уравнения и неравенства.",
-                practice: "Решение задач уровня Б и В с подробными разборами.",
-                test: "Тест-аналог ЦЭ по математике с бланком ответов."
-            },
-            english: {
-                name: "🇬🇧 Английский язык",
-                theory: "Грамматический справочник: времена, модальные глаголы, пассивный залог.",
-                practice: "Лексико-грамматические упражнения (Use of English).",
-                test: "Тест формата ЦТ по английскому языку."
-            }
-        };
-
-        let currentSubject = null;
-
-        // Рендер списка предметов
-        function renderSubjects() {
-            const container = document.getElementById('subjects-container');
-            container.innerHTML = '';
-            
-            for (const [key, value] of Object.entries(subjectsData)) {
-                const card = document.createElement('div');
-                card.className = 'subject-card';
-                card.innerHTML = `
-                    <span class="subject-title">${value.name}</span>
-                    <span>→</span>
-                `;
-                card.onclick = () => selectSubject(key);
-                container.appendChild(card);
+        function switchTab(tab) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            if(tab === 'test') {
+                document.getElementById('test-section').classList.add('active');
+                event.target.classList.add('active');
+            } else {
+                document.getElementById('vocab-section').classList.add('active');
+                event.target.classList.add('active');
             }
         }
 
-        function selectSubject(subjectKey) {
-            currentSubject = subjectKey;
-            document.getElementById('subject-title-heading').textContent = subjectsData[subjectKey].name;
-            document.getElementById('screen-home').classList.add('hidden');
-            document.getElementById('screen-subject').classList.remove('hidden');
-            document.getElementById('section-content').classList.add('hidden');
+        // Данные теста (Адукар Тест 2, Часть А)
+        const questions = [
+            { id: 1, text: "А1. Пишется А на месте пропуска в словах:", options: ["1) долго м_лчать", "2) выг_реть на солнце", "3) изл_гать красиво", "4) сокр_щать численность", "5) к_варный план"], correct: [3, 4] },
+            { id: 2, text: "А2. Пишется Е на месте пропуска в словах:", options: ["1) осв_щать фонариком", "2) ум_реть от смеха", "3) ижд_венец", "4) уд_вляться результату", "5) выч_тать числа"], correct: [1, 2] },
+            { id: 3, text: "А3. Пишется С на месте пропуска в словах:", options: ["1) бе_сонная ночь", "2) пес_имист", "3) уз_кий ручей", "4) ткац_кий станок", "5) сказочный витя_ь"], correct: [1, 2] },
+            { id: 4, text: "А4. Пишется Е на месте пропуска в словах:", options: ["1) скач_щий всадник", "2) засе_вший поле", "3) завис_л от родителей", "4) трактор паш_т", "5) терп_т поражение"], correct: [3, 4] },
+            { id: 5, text: "А5. Укажите номера пропусков, где пишется НЕ (...н_ прислушивалась...):", options: ["1) 1, 2, 3", "2) 2, 4, 5", "3) 1, 3, 5", "4) 2, 3, 4", "5) 1, 4, 5"], correct: [2, 4, 5] },
+            { id: 6, text: "А6. Пишется НЕ слитно в словах:", options: ["1) вовсе (не вкусный) обед", "2) (не)годующий взгляд", "3) (не)выполненное вовремя задание", "4) очень (не)красивый жест", "5) (не)распустившийся цветок"], correct: [2, 4, 5] },
+            { id: 7, text: "А7. Через дефис пишутся слова:", options: ["1) (сельско)хозяйственный отдел", "2) (поп)культура", "3) (ярко)красный закат", "4) (юго)западный ветер", "5) (трёх)метровая доска"], correct: [2, 3, 4] },
+            { id: 8, text: "А8. Слитно пишутся выделенные слова в предложениях:", options: ["1) (В)последствии...", "2) Имей (в)виду...", "3) Я забрёл (в)глубь...", "4) ...за(то) результат...", "5) ...то(же) решили..."], correct: [1, 4, 5] }
+        ];
+
+        // Словарные слова
+        const vocabWords = [
+            "Аккомпанемент", "Винегрет", "Дилетант", "Иждивенец", "Интеллигент", 
+            "Палисадник", "Периферия", "Привилегия", "Терраса", "Эксперимент",
+            "Аббревиатура", "Абонемент", "Агрегат", "Акклиматизация", "Аккумулятор"
+        ];
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            let html = '';
+            questions.forEach(q => {
+                html += `<div class="card"><div class="question-title">${q.text}</div><div class="options">`;
+                q.options.forEach((opt, idx) => {
+                    html += `<label><input type="checkbox" name="q${q.id}" value="${idx+1}"> ${opt}</label>`;
+                });
+                html += `</div></div>`;
+            });
+            container.innerHTML = html;
         }
 
-        function goHome() {
-            document.getElementById('screen-subject').classList.add('hidden');
-            document.getElementById('screen-home').classList.remove('hidden');
-            currentSubject = null;
+        function renderVocab() {
+            const grid = document.getElementById('vocab-grid');
+            grid.innerHTML = vocabWords.map(w => `<div class="vocab-item">✅ ${w}</div>`).join('');
         }
 
-        function openSection(sectionType) {
-            const contentBox = document.getElementById('section-content');
-            contentBox.classList.remove('hidden');
-            
-            let title = "";
-            if (sectionType === 'theory') title = "<h3>📖 Теоретический блок</h3>";
-            if (sectionType === 'practice') title = "<h3>✍️ Практические задания</h3>";
-            if (sectionType === 'test') title = "<h3>📝 Тест-аналог ЦТ/ЦЭ</h3>";
+        function submitTest() {
+            let score = 0;
+            let mistakes = [];
 
-            const text = subjectsData[currentSubject][sectionType];
-            contentBox.innerHTML = `${title}<p>${text}</p>`;
+            questions.forEach(q => {
+                const checked = Array.from(document.querySelectorAll(`input[name="q${q.id}"]:checked`)).map(el => parseInt(el.value));
+                const correct = q.correct.sort();
+                const isMatch = JSON.stringify(checked.sort()) === JSON.stringify(correct);
+                
+                if (isMatch) {
+                    score += 1;
+                } else {
+                    mistakes.push(`<div class="error-item">❌ Ошибка в задании А${q.id}</div>`);
+                }
+            });
+
+            // Условная шкала ЦТ (перевод первичных баллов в тестовые от 0 до 100)
+            const ctScale = { 0: 10, 1: 22, 2: 35, 3: 48, 4: 60, 5: 72, 6: 82, 7: 92, 8: 100 };
+            const finalScore = ctScale[score] || 10;
+
+            const resDiv = document.getElementById('result');
+            resDiv.style.display = 'block';
+            resDiv.innerHTML = `
+                <h3>Результат тестирования</h3>
+                <p>Правильных ответов: <b>${score} из ${questions.length}</b></p>
+                <h2>Ваш тестовый балл по ЦТ: <span style="color: #2563eb;">${finalScore} / 100</span></h2>
+                <div style="margin-top: 10px;">${mistakes.length > 0 ? '<b>Разбор ошибок:</b>' + mistakes.join('') : '🎉 Идеальный результат! Все верно!'}</div>
+            `;
+            resDiv.scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Запуск отрисовки при загрузке
-        renderSubjects();
+        renderQuiz();
+        renderVocab();
     </script>
 </body>
 </html>

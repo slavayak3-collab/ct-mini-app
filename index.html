@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подготовка к ЦТ/ЦЭ</title>
+    <!-- Подключаем Telegram Web App JS SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg-color: var(--tg-theme-bg-color, #ffffff);
+            --text-color: var(--tg-theme-text-color, #222222);
+            --hint-color: var(--tg-theme-hint-color, #999999);
+            --button-color: var(--tg-theme-button-color, #2481cc);
+            --button-text-color: var(--tg-theme-button-text-color, #ffffff);
+            --card-bg: var(--tg-theme-secondary-bg-color, #f4f4f5);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 16px;
+        }
+
+        h1, h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Список предметов */
+        .subjects-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .subject-card {
+            background-color: var(--card-bg);
+            padding: 16px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .subject-card:active {
+            transform: scale(0.98);
+        }
+
+        .subject-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* Разделы предмета */
+        .sections-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .section-card {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            border: 2px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        .section-card:hover {
+            border-color: var(--button-color);
+        }
+
+        /* Кнопка назад */
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--button-color);
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 16px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .content-box {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ЭКРАН 1: СПИСОК ПРЕДМЕТОВ -->
+    <div id="screen-home">
+        <h1>🎯 Подготовка к ЦТ / ЦЭ</h1>
+        <div class="subjects-list" id="subjects-container">
+            <!-- Предметы будут добавлены через JS -->
+        </div>
+    </div>
+
+    <!-- ЭКРАН 2: РАЗДЕЛЫ ПРЕДМЕТА -->
+    <div id="screen-subject" class="hidden">
+        <button class="back-btn" onclick="goHome()">← Назад к предметам</button>
+        <h1 id="subject-title-heading">Предмет</h1>
+        
+        <div class="sections-grid">
+            <div class="section-card" onclick="openSection('theory')">📖 Теория и правила</div>
+            <div class="section-card" onclick="openSection('practice')">✍️ Практика по темам</div>
+            <div class="section-card" onclick="openSection('test')">📝 Тест-аналог ЦТ/ЦЭ</div>
+        </div>
+
+        <div id="section-content" class="content-box hidden">
+            <!-- Сюда будет загружаться контент выбранного раздела -->
+        </div>
+    </div>
+
+    <script>
+        // Инициализация Telegram Web App
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Разворачиваем на весь экран
+
+        // Данные предметов и контента
+        const subjectsData = {
+            russian: {
+                name: "🇷🇺 Русский язык",
+                theory: "Здесь собраны все правила по орфографии и пунктуации для ЦТ/ЦЭ: Н и НН в суффиксах, слитно/раздельно и т.д.",
+                practice: "Тренажер заданий А1-А18. Выберите тему и решите 20 упражнений с проверкой.",
+                test: "Полноценный репетиционный тест формата ЦТ (50 вопросов, ограничение по времени)."
+            },
+            math: {
+                name: "📐 Математика",
+                theory: "Формулы геометрии, тригонометрии, уравнения и неравенства.",
+                practice: "Решение задач уровня Б и В с подробными разборами.",
+                test: "Тест-аналог ЦЭ по математике с бланком ответов."
+            },
+            english: {
+                name: "🇬🇧 Английский язык",
+                theory: "Грамматический справочник: времена, модальные глаголы, пассивный залог.",
+                practice: "Лексико-грамматические упражнения (Use of English).",
+                test: "Тест формата ЦТ по английскому языку."
+            }
+        };
+
+        let currentSubject = null;
+
+        // Рендер списка предметов
+        function renderSubjects() {
+            const container = document.getElementById('subjects-container');
+            container.innerHTML = '';
+            
+            for (const [key, value] of Object.entries(subjectsData)) {
+                const card = document.createElement('div');
+                card.className = 'subject-card';
+                card.innerHTML = `
+                    <span class="subject-title">${value.name}</span>
+                    <span>→</span>
+                `;
+                card.onclick = () => selectSubject(key);
+                container.appendChild(card);
+            }
+        }
+
+        function selectSubject(subjectKey) {
+            currentSubject = subjectKey;
+            document.getElementById('subject-title-heading').textContent = subjectsData[subjectKey].name;
+            document.getElementById('screen-home').classList.add('hidden');
+            document.getElementById('screen-subject').classList.remove('hidden');
+            document.getElementById('section-content').classList.add('hidden');
+        }
+
+        function goHome() {
+            document.getElementById('screen-subject').classList.add('hidden');
+            document.getElementById('screen-home').classList.remove('hidden');
+            currentSubject = null;
+        }
+
+        function openSection(sectionType) {
+            const contentBox = document.getElementById('section-content');
+            contentBox.classList.remove('hidden');
+            
+            let title = "";
+            if (sectionType === 'theory') title = "<h3>📖 Теоретический блок</h3>";
+            if (sectionType === 'practice') title = "<h3>✍️ Практические задания</h3>";
+            if (sectionType === 'test') title = "<h3>📝 Тест-аналог ЦТ/ЦЭ</h3>";
+
+            const text = subjectsData[currentSubject][sectionType];
+            contentBox.innerHTML = `${title}<p>${text}</p>`;
+        }
+
+        // Запуск отрисовки при загрузке
+        renderSubjects();
+    </script>
+</body>
+</html>
